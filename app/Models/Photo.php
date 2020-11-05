@@ -12,7 +12,7 @@ class Photo extends Model
     protected $imagePath = '/images/';
 
     protected $fillable = [
-        'path', 'type_id'
+        'path', 'type_id', 'requirePassword'
     ];
 
     public function type() {

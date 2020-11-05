@@ -17,6 +17,7 @@ class CreatePhotosTable extends Migration
             $table->id();
             $table->string('path');
             $table->foreignId('type_id')->constrained();
+            $table->string('requirePassword');
             $table->timestamps();
         });
     }

@@ -49,7 +49,8 @@ class PhotosController extends BaseController
             $file->move('images', $name);
             $photo = Photo::create([
                 'path' => $name,
-                'type_id' => $request->type
+                'type_id' => $request->type,
+                'requirePassword' => $request->requirePassword
             ]);
         }
 
