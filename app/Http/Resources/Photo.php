@@ -16,7 +16,7 @@ class Photo extends JsonResource
     {
         return [
             'id' => $this->id,
-            'path' => asset($this->path),
+            'path' => $this->path,
             'type' => $this->type->name,
             'requirePassword' => $this->requirePassword
         ];

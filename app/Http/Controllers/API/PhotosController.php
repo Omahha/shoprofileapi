@@ -9,6 +9,8 @@ use App\Http\Resources\PhotoCollection;
 use App\Models\Photo;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class PhotosController extends BaseController
 {
@@ -46,15 +48,17 @@ class PhotosController extends BaseController
 
         if($file = $request->file('path')) {
             $name = time().$file->getClientOriginalName();
-            $file->move('images', $name);
+            // $file->move('images', $name);
+            $path = Storage::disk('s3')->putFileAs('images', $file, $name, 'public');
             $photo = Photo::create([
-                'path' => $name,
+                'path' => Storage::disk('s3')->url($path),
                 'type_id' => $request->type,
                 'requirePassword' => $request->requirePassword
             ]);
         }
 
         return $this->sendResponse(new ResourcesPhoto($photo), 'Photo added.');
+        // return $this->sendResponse($path, 'Photo added.');
     }
 
     /**
@@ -100,9 +104,13 @@ class PhotosController extends BaseController
     public function destroy(Photo $photo)
     {
         //
-        unlink(public_path().$photo->path);
+        // unlink(public_path().$photo->path);
+        $filename = substr($photo->path, strpos($photo->path, '/images/'));
+        Storage::disk('s3')->delete($filename);
         $photo->delete();
 
-        return $this->sendResponse(['deleted'], 'Delete successfully.');
+
+        // return $this->sendResponse(['deleted'], 'Delete successfully.');
+        return $this->sendResponse([$filename], 'Delete successfully.');
     }
 }
