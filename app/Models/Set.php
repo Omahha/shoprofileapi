@@ -9,7 +9,7 @@ class Set extends Model
 {
     use HasFactory;
 
-    protected $imagePath = '/images/';
+    // protected $imagePath = '/images/';
 
     protected $fillable = [
         'path', 'photo_id', 'type_id'
@@ -23,7 +23,7 @@ class Set extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function getPathAttribute($value) {
-        return $this->imagePath.$value;
-    }
+    // public function getPathAttribute($value) {
+    //     return $this->imagePath.$value;
+    // }
 }
