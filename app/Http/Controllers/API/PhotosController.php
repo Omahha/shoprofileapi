@@ -10,7 +10,6 @@ use App\Models\Photo;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\Filesystem;
 
 class PhotosController extends BaseController
 {

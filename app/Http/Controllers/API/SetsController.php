@@ -10,6 +10,7 @@ use App\Models\Photo;
 use App\Models\Set;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SetsController extends BaseController
 {
@@ -49,9 +50,10 @@ class SetsController extends BaseController
         //
         if($file = $request->file('path')) {
             $name = time().$file->getClientOriginalName();
-            $file->move('images', $name);
+            // $file->move('images', $name);
+            $path = Storage::disk('s3')->putFileAs('images', $file, $name, 'public');
             $set = Set::create([
-                'path' => $name,
+                'path' => Storage::disk('s3')->url($path),
                 'photo_id' => $request->photo_id,
                 'type_id' => Photo::where('id', $request->photo_id)->first()->type_id
             ]);
@@ -104,7 +106,9 @@ class SetsController extends BaseController
     public function destroy(Set $set)
     {
         //
-        unlink(public_path().$set->path);
+        // unlink(public_path().$set->path);
+        $filename = substr($set->path, strpos($set->path, '/images/'));
+        Storage::disk('s3')->delete($filename);
         $set->delete();
 
         return $this->sendResponse(['deleted'], 'Delete successfully.');
